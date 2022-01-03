@@ -1,32 +1,26 @@
-import 'package:admin_mini/methods/auth_methods.dart';
 import 'package:admin_mini/methods/db_methods.dart';
-import 'package:admin_mini/models/user_model.dart';
-import 'package:admin_mini/pages/search_page.dart';
-import 'package:admin_mini/pages/trades_page.dart';
+import 'package:admin_mini/models/manager_model.dart';
+import 'package:admin_mini/pages/manager_users.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class UserListWidget extends StatefulWidget {
-  const UserListWidget({Key? key, required this.users}) : super(key: key);
+class ManagerList extends StatefulWidget {
+  const ManagerList({Key? key, required this.managers}) : super(key: key);
 
-  final List<UserModel> users;
+  final List<ManagerModel> managers;
 
   @override
-  _UserListWidgetState createState() => _UserListWidgetState();
+  _ManagerListState createState() => _ManagerListState();
 }
 
-class _UserListWidgetState extends State<UserListWidget> {
-  final AuthMethods _authMethods = AuthMethods();
+class _ManagerListState extends State<ManagerList> {
   final DbMethods _dbMethods = DbMethods();
 
   final TextEditingController _amountController = TextEditingController();
 
-  _bottomSheet(UserModel user) {
+  _bottomSheet(ManagerModel manager) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (context) {
         return ListView(
           shrinkWrap: true,
@@ -39,7 +33,7 @@ class _UserListWidgetState extends State<UserListWidget> {
               ),
               onTap: () {
                 Navigator.pop(context);
-                _addMarginBottomSheet(user);
+                _addMarginBottomSheet(manager);
               },
             ),
             ListTile(
@@ -50,70 +44,36 @@ class _UserListWidgetState extends State<UserListWidget> {
               ),
               onTap: () {
                 Navigator.pop(context);
-                _withdrawMarginBottomSheet(user);
+                _withdrawMarginBottomSheet(manager);
               },
             ),
             ListTile(
-              title: 'View Trades'.text.size(16).make(),
+              title: 'View Users'.text.size(16).make(),
               leading: const Icon(
-                Icons.bar_chart_rounded,
+                Icons.people,
                 color: Vx.green600,
               ),
-              onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Trades(uid: user.uid)))
-                  .then((value) => Navigator.pop(context)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManagerUsers(
+                              uid: manager.uid,
+                            )));
+              },
             ),
             ListTile(
-              title: 'View History'.text.size(16).make(),
-              leading: const Icon(
-                Icons.history,
-                color: Vx.blueGray600,
-              ),
-              onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Search(uid: user.uid)))
-                  .then((value) => Navigator.pop(context)),
-            ),
-            !user.isDisabled
-                ? ListTile(
-                    title: 'Disable User'.text.size(16).make(),
-                    leading: const Icon(
-                      Icons.close,
-                      color: Vx.red600,
-                    ),
-                    onTap: () => _dbMethods.disableUser(user.uid).then((value) {
-                      Navigator.pop(context);
-                      VxToast.show(context,
-                          msg:
-                              '${user.username.allWordsCapitilize()} disabled');
-                    }),
-                  )
-                : ListTile(
-                    title: 'Enable User'.text.size(16).make(),
-                    leading: const Icon(
-                      Icons.check,
-                      color: Vx.blue600,
-                    ),
-                    onTap: () => _dbMethods.enableUser(user.uid).then((value) {
-                      Navigator.pop(context);
-                      VxToast.show(context,
-                          msg: '${user.username.allWordsCapitilize()} enabled');
-                    }),
-                  ),
-            ListTile(
-              title: 'Delete User'.text.size(16).make(),
+              title: 'Delete Manager'.text.size(16).make(),
               leading: const Icon(
                 Icons.delete,
                 color: Vx.red600,
               ),
-              onTap: () => _authMethods.deleteUser(user.uid).then((value) {
-                // debugPrint(value.body);
+              // onTap: () => _authMethods.deleteUser(manager.uid).then((value) {
+              //   // debugPrint(value.body);
 
-                Navigator.pop(context);
-              }),
+              //   Navigator.pop(context);
+              // }),
             ),
           ],
         );
@@ -121,7 +81,7 @@ class _UserListWidgetState extends State<UserListWidget> {
     );
   }
 
-  _addMarginBottomSheet(UserModel user) {
+  _addMarginBottomSheet(ManagerModel manager) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -150,7 +110,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                 onPressed: () {
                   if (_amountController.text.isNotEmpty) {
                     _dbMethods
-                        .addAmount(num.parse(_amountController.text), user)
+                        .addAmountToManager(
+                            num.parse(_amountController.text), manager)
                         .then((value) {
                       _amountController.clear();
                       VxToast.show(context, msg: 'Margin Successfuly Added');
@@ -173,7 +134,7 @@ class _UserListWidgetState extends State<UserListWidget> {
     );
   }
 
-  _withdrawMarginBottomSheet(UserModel user) {
+  _withdrawMarginBottomSheet(ManagerModel manager) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -202,7 +163,8 @@ class _UserListWidgetState extends State<UserListWidget> {
                 onPressed: () {
                   if (_amountController.text.isNotEmpty) {
                     _dbMethods
-                        .withdrawAmount(num.parse(_amountController.text), user)
+                        .withdrawAmountFromManager(
+                            num.parse(_amountController.text), manager)
                         .then((value) {
                       _amountController.clear();
                       VxToast.show(context, msg: 'Withdraw Successful');
@@ -228,10 +190,10 @@ class _UserListWidgetState extends State<UserListWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: widget.users.length,
+      itemCount: widget.managers.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () => _bottomSheet(widget.users[index]),
+          onTap: () => _bottomSheet(widget.managers[index]),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -244,42 +206,20 @@ class _UserListWidgetState extends State<UserListWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          widget.users[index].isDisabled
-                              ? const Icon(Icons.close, color: Colors.white)
-                              : const SizedBox(
-                                  width: 0,
-                                ),
-                          widget.users[index].name.text.bold.white.capitalize
-                              .size(20)
-                              .make(),
-                        ],
-                      ),
-                      widget.users[index].email.text.white.make(),
+                      widget.managers[index].name.text.bold.white.capitalize
+                          .size(20)
+                          .make(),
+                      widget.managers[index].email.text.white.make(),
                     ],
                   ),
-                  widget.users[index].uid.text.white.make().objectCenterRight(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ('A : ' + widget.users[index].amount.toStringAsFixed(2))
-                          .text
-                          .bold
-                          .white
-                          .make(),
-                      ('E : ' + widget.users[index].equity.toStringAsFixed(2))
-                          .text
-                          .bold
-                          .white
-                          .make(),
-                      ('M : ' + widget.users[index].margin.toStringAsFixed(2))
-                          .text
-                          .bold
-                          .white
-                          .make()
-                    ],
-                  ).pSymmetric(v: 5)
+                  ('Amount : ' +
+                          widget.managers[index].amount.toStringAsFixed(2))
+                      .text
+                      .bold
+                      .white
+                      .make()
+                      .pSymmetric(v: 5)
+                      .centered()
                 ],
               ).p16().backgroundColor(index % 2 == 0
                   ? Theme.of(context).primaryColor

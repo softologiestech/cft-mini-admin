@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'CFT Mini Admin',
+      title: 'CFT Admin',
       theme: ThemeData(
           colorScheme: ThemeData().colorScheme.copyWith(
                 primaryVariant: const Color(0XFF111528),

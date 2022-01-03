@@ -12,6 +12,7 @@ class UserModel {
   num margin;
   num commission;
   num net_commission;
+  bool isDisabled;
 
   UserModel({
     required this.name,
@@ -25,6 +26,7 @@ class UserModel {
     required this.margin,
     required this.commission,
     required this.net_commission,
+    required this.isDisabled,
   });
 
   UserModel copyWith({
@@ -39,6 +41,7 @@ class UserModel {
     num? margin,
     num? commission,
     num? net_commission,
+    bool? isDisabled,
   }) {
     return UserModel(
       name: name ?? this.name,
@@ -52,6 +55,7 @@ class UserModel {
       margin: margin ?? this.margin,
       commission: commission ?? this.commission,
       net_commission: net_commission ?? this.net_commission,
+      isDisabled: isDisabled ?? this.isDisabled,
     );
   }
 
@@ -68,22 +72,24 @@ class UserModel {
       'margin': margin,
       'commission': commission,
       'net_commission': net_commission,
+      'isDisabled': isDisabled,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      name: map['name'],
-      username: map['username'],
-      email: map['email'],
-      uid: map['uid'],
-      password: map['password'],
-      equity: map['equity'],
-      amount: map['amount'],
-      free_margin: map['free_margin'],
-      margin: map['margin'],
-      commission: map['commission'],
-      net_commission: map['net_commission'],
+      name: map['name'] ?? '',
+      username: map['username'] ?? '',
+      email: map['email'] ?? '',
+      uid: map['uid'] ?? '',
+      password: map['password'] ?? '',
+      equity: map['equity'] ?? 0,
+      amount: map['amount'] ?? 0,
+      free_margin: map['free_margin'] ?? 0,
+      margin: map['margin'] ?? 0,
+      commission: map['commission'] ?? 0,
+      net_commission: map['net_commission'] ?? 0,
+      isDisabled: map['isDisabled'] ?? false,
     );
   }
 
@@ -94,7 +100,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(name: $name, username: $username, email: $email, uid: $uid, password: $password, equity: $equity, amount: $amount, free_margin: $free_margin, margin: $margin, commission: $commission, net_commission: $net_commission)';
+    return 'UserModel(name: $name, username: $username, email: $email, uid: $uid, password: $password, equity: $equity, amount: $amount, free_margin: $free_margin, margin: $margin, commission: $commission, net_commission: $net_commission, isDisabled: $isDisabled)';
   }
 
   @override
@@ -112,7 +118,8 @@ class UserModel {
         other.free_margin == free_margin &&
         other.margin == margin &&
         other.commission == commission &&
-        other.net_commission == net_commission;
+        other.net_commission == net_commission &&
+        other.isDisabled == isDisabled;
   }
 
   @override
@@ -127,6 +134,7 @@ class UserModel {
         free_margin.hashCode ^
         margin.hashCode ^
         commission.hashCode ^
-        net_commission.hashCode;
+        net_commission.hashCode ^
+        isDisabled.hashCode;
   }
 }

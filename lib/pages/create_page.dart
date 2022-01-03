@@ -1,5 +1,6 @@
 import 'package:admin_mini/methods/auth_methods.dart';
 import 'package:admin_mini/methods/db_methods.dart';
+import 'package:admin_mini/methods/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -14,6 +15,7 @@ class Create extends StatefulWidget {
 class _CreateState extends State<Create> {
   final AuthMethods _authMethods = AuthMethods();
   final DbMethods _dbMethods = DbMethods();
+  final Storage _storage = Storage();
 
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
@@ -24,33 +26,80 @@ class _CreateState extends State<Create> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
 
+  String type = '';
+
   _createUser() {
     if (_nameController.text.isNotEmpty &&
         _usernameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty &&
         _amountController.text.isNotEmpty) {
-      _authMethods
-          .register(
-              _usernameController.text.toLowerCase(), _passwordController.text)
-          .then((value) {
-        _dbMethods.addUser(
+      if (type == 'admin') {
+        _authMethods
+            .register(_usernameController.text.toLowerCase(),
+                _passwordController.text)
+            .then((value) {
+          _dbMethods.addUser(
             _nameController.text.toLowerCase(),
             _emailController.text.toLowerCase(),
             _passwordController.text,
             num.parse(_amountController.text),
             value.user!.uid,
-            _usernameController.text.toLowerCase());
+            _usernameController.text.toLowerCase(),
+            _authMethods.currentUser()!.uid,
+          );
 
-        Navigator.pop(context);
-      }).catchError((err) {
-        _btnController.reset();
-        VxToast.show(context, msg: err.toString());
-      });
+          Navigator.pop(context);
+        }).catchError((err) {
+          _btnController.reset();
+          VxToast.show(context, msg: err.toString());
+        });
+      } else {
+        _authMethods
+            .register(_usernameController.text.toLowerCase(),
+                _passwordController.text)
+            .then((value) {
+          _dbMethods.addUser(
+            _nameController.text.toLowerCase(),
+            _emailController.text.toLowerCase(),
+            _passwordController.text,
+            num.parse(_amountController.text),
+            value.user!.uid,
+            _usernameController.text.toLowerCase(),
+            _authMethods.currentUser()!.uid,
+          );
+
+          // _dbMethods.addUserToManager(
+          //   _nameController.text.toLowerCase(),
+          //   _emailController.text.toLowerCase(),
+          //   _passwordController.text,
+          //   num.parse(_amountController.text),
+          //   value.user!.uid,
+          //   _usernameController.text.toLowerCase(),
+          //   _authMethods.currentUser()!.uid,
+          // );
+
+          Navigator.pop(context);
+        }).catchError((err) {
+          _btnController.reset();
+          VxToast.show(context, msg: err.toString());
+        });
+      }
     } else {
       _btnController.reset();
       VxToast.show(context, msg: 'Fields cannot be empty');
     }
+  }
+
+  @override
+  void initState() {
+    _storage.getType().then((value) {
+      setState(() {
+        type = value;
+      });
+    });
+
+    super.initState();
   }
 
   @override
@@ -64,6 +113,15 @@ class _CreateState extends State<Create> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              'Create a New User for Crypto Future Trade Mini'
+                  .text
+                  .bold
+                  .color(Theme.of(context).primaryColor)
+                  .size(22)
+                  .make(),
+              const SizedBox(
+                height: 40,
+              ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Name'),
                 controller: _nameController,

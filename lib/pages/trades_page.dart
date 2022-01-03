@@ -1,5 +1,4 @@
 import 'package:admin_mini/methods/db_methods.dart';
-import 'package:admin_mini/pages/search_page.dart';
 import 'package:admin_mini/utils/calcs_utils.dart';
 import 'package:admin_mini/widgets/trades_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,18 +40,18 @@ class _TradesState extends State<Trades> {
     return Scaffold(
       appBar: AppBar(
         title: 'Trades'.text.make(),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Search(
-                              uid: widget.uid,
-                            )));
-              },
-              icon: const Icon(Icons.search)),
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (context) => Search(
+        //                       uid: widget.uid,
+        //                     )));
+        //       },
+        //       icon: const Icon(Icons.search)),
+        // ],
       ),
       body: StreamBuilder(
         stream: _dbMethods.getUserTrades(widget.uid),

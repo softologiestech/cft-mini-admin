@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
             .login(_usernameController.text.toLowerCase(),
                 _passwordController.text)
             .then((value) {
-          // print(value.user);
+          // print(value.user!.uid);
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const Home()),
@@ -53,42 +53,59 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Username'),
-            controller: _usernameController,
-          ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-            controller: _passwordController,
-          ),
-          DropdownButtonFormField<String>(
-            hint: 'Select type'.text.make(),
-            items: <String>['Admin', 'Manager'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (value) {
-              // print(_type);
-              setState(() {
-                _type = value.toString().toLowerCase();
-                _storage.addType(value.toString().toLowerCase());
-              });
-            },
-          ).h(50),
-          RoundedLoadingButton(
-            child: 'Login'.text.make(),
-            controller: _btnController,
-            onPressed: () => _login(),
-            color: Theme.of(context).primaryColor,
-          ).pSymmetric(v: 10)
-        ],
-      ).p16(),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/bull.png',
+                height: 250,
+              ),
+              const SizedBox(height: 40),
+              'Login To Crypto Future Trade Mini Admin'
+                  .text
+                  .bold
+                  .color(Theme.of(context).primaryColor)
+                  .size(22)
+                  .make(),
+              const SizedBox(height: 40),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Username'),
+                controller: _usernameController,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                controller: _passwordController,
+              ),
+              DropdownButtonFormField<String>(
+                hint: 'Select type'.text.make(),
+                items: <String>['Admin', 'Manager'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  // print(_type);
+                  setState(() {
+                    _type = value.toString().toLowerCase();
+                    _storage.addType(value.toString().toLowerCase());
+                  });
+                },
+              ).h(50),
+              const SizedBox(height: 40),
+              RoundedLoadingButton(
+                child: 'LOGIN'.text.bold.size(20).make(),
+                controller: _btnController,
+                onPressed: () => _login(),
+                color: Theme.of(context).primaryColor,
+              ).pSymmetric(v: 10)
+            ],
+          ).p16(),
+        ),
+      ),
     );
   }
 }

@@ -1,18 +1,18 @@
 import 'package:admin_mini/methods/db_methods.dart';
-import 'package:admin_mini/models/user_model.dart';
-import 'package:admin_mini/widgets/userlist_widget.dart';
+import 'package:admin_mini/models/manager_model.dart';
+import 'package:admin_mini/widgets/managerlist_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class SearchUser extends StatefulWidget {
-  const SearchUser({Key? key}) : super(key: key);
+class SearchManager extends StatefulWidget {
+  const SearchManager({Key? key}) : super(key: key);
 
   @override
-  _SearchUserState createState() => _SearchUserState();
+  _SearchManagerState createState() => _SearchManagerState();
 }
 
-class _SearchUserState extends State<SearchUser> {
+class _SearchManagerState extends State<SearchManager> {
   final DbMethods _dbMethods = DbMethods();
 
   final TextEditingController _usernameController = TextEditingController();
@@ -41,21 +41,21 @@ class _SearchUserState extends State<SearchUser> {
             },
           ),
           StreamBuilder(
-            stream: _dbMethods.searchUser(searchKey),
+            stream: _dbMethods.searchManager(searchKey),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData) {
-                List<UserModel> users = [];
+                List<ManagerModel> managers = [];
 
                 for (var element in snapshot.data!.docs) {
-                  UserModel _userModel =
-                      UserModel.fromMap(element.data() as Map<String, dynamic>);
+                  ManagerModel _managerModel = ManagerModel.fromMap(
+                      element.data() as Map<String, dynamic>);
 
-                  users.add(_userModel);
+                  managers.add(_managerModel);
                 }
 
                 // print(users);
 
-                return Flexible(child: UserListWidget(users: users));
+                return Flexible(child: ManagerList(managers: managers));
               }
 
               return ''.text.make();

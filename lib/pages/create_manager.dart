@@ -64,6 +64,15 @@ class _CreateManagerState extends State<CreateManager> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              'Create a New Manager for Crypto Future Trade Mini'
+                  .text
+                  .bold
+                  .color(Theme.of(context).primaryColor)
+                  .size(22)
+                  .make(),
+              const SizedBox(
+                height: 40,
+              ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Name'),
                 controller: _nameController,

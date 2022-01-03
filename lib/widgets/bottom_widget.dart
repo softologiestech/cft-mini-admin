@@ -35,8 +35,8 @@ class _BottomWidgetState extends State<BottomWidget> {
     _lotController =
         TextEditingController(text: widget.trade['quantity'].toString());
     _priceController = widget.trade['trade'].toString() == 'buy'
-        ? TextEditingController(text: widget.trade['bp'].toString())
-        : TextEditingController(text: widget.trade['ap'].toString());
+        ? TextEditingController(text: widget.trade['ap'].toString())
+        : TextEditingController(text: widget.trade['bp'].toString());
 
     _dbMethods.getUserData(widget.uid).listen((event) {
       user = UserModel.fromMap(event.data() as Map<String, dynamic>);
